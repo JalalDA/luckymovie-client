@@ -14,10 +14,14 @@ import { useEffect, useState } from 'react'
 import { postNewMovie, postNewCinema } from 'modules/axios'
 import { useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
+import { Modal } from 'react-bootstrap'
+
 
 const AddMovie = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingCinema, setIsLoadingCinema] = useState(false)
+  const [show, setShow] = useState(false)
+  const [msg, setMsg] = useState('')
   const [detailMovie, setDetailMovie] = useState({
     title: "",
     genre: "",
@@ -51,7 +55,8 @@ const AddMovie = () => {
       const res = await postNewMovie(formData, token)
       setIsLoading(false)
       setMovie_Id(res.data.data.id)
-      alert("Succes add movie")
+      setMsg('Succes Add Movie')
+      setShow(true)
     } catch (error) {
       setIsLoading(false)
       console.log(error);
@@ -69,11 +74,10 @@ const AddMovie = () => {
       const res = await postNewCinema(body, token)
       console.log(res);
       setIsLoadingCinema(false)
-      alert(res.data.message)
+      setMsg(res.data.message)
     } catch (error) {
       console.log(error);
       setIsLoadingCinema(false)
-      alert(error.response.data.msg)
     }
   }
   // console.log(previewImg);
@@ -253,6 +257,27 @@ const AddMovie = () => {
         </div>
       </div>
       <Footer />
+      <Modal
+        show={show}
+        onHide={()=>{
+          setShow(false)
+        }}
+        className={styles.logoutModal}
+      >
+        <Modal.Header>
+          <Modal.Title className={styles.modalHeader}></Modal.Title>
+        </Modal.Header>
+        <Modal.Body className={styles.modalBody}>
+          {msg}
+        </Modal.Body>
+        <Modal.Footer>
+          <div className={styles.modalYesButton} onClick={()=>{
+            setShow(false)
+          }}>
+            oke
+          </div>
+        </Modal.Footer>
+      </Modal>
     </>
   )
 }
